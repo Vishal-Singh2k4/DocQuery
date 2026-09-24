@@ -1,0 +1,72 @@
+[
+  {
+    "id": 1,
+    "question": "How many Product Engineering internship positions are available?",
+    "expected_answer": "7 positions",
+    "expected_page": 1,
+    "is_unsupported": false
+  },
+  {
+    "id": 2,
+    "question": "What programming languages are required?",
+    "expected_answer": "Python or TypeScript",
+    "expected_page": 3,
+    "is_unsupported": false
+  },
+  {
+    "id": 3,
+    "question": "What does the Product Engineering internship convert to?",
+    "expected_answer": "Product Engineer",
+    "expected_page": 1,
+    "is_unsupported": false
+  },
+  {
+    "id": 4,
+    "question": "What LLM concepts should applicants understand?",
+    "expected_answer": "Tokens, context windows, embeddings and tool calling",
+    "expected_page": 3,
+    "is_unsupported": false
+  },
+  {
+    "id": 5,
+    "question": "What security framework should applicants know?",
+    "expected_answer": "OWASP Top 10",
+    "expected_page": 3,
+    "is_unsupported": false
+  },
+  {
+    "id": 6,
+    "question": "What database technology is mentioned?",
+    "expected_answer": "PostgreSQL",
+    "expected_page": 2,
+    "is_unsupported": false
+  },
+  {
+    "id": 7,
+    "question": "What frontend technology is mentioned?",
+    "expected_answer": "React",
+    "expected_page": 2,
+    "is_unsupported": false
+  },
+  {
+    "id": 8,
+    "question": "What technologies are listed as good-to-have skills?",
+    "expected_answer": "RAG or agent frameworks (such as LangGraph), CTFs, Docker, cloud platform, Ollama or vLLM",
+    "expected_page": 3,
+    "is_unsupported": false
+  },
+  {
+    "id": 9,
+    "question": "What are the internship working hours?",
+    "expected_answer": "Core hours are 11:00 to 17:00 IST",
+    "expected_page": 1,
+    "is_unsupported": false
+  },
+  {
+    "id": 10,
+    "question": "What is CyanoFabric's annual revenue?",
+    "expected_answer": "I don't have enough information in the provided documents to answer this question.",
+    "expected_page": null,
+    "is_unsupported": true
+  }
+]
