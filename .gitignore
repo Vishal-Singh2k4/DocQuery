@@ -1,0 +1,26 @@
+# Virtual Environment
+.venv/
+venv/
+ENV/
+env/
+
+# Environment Variables & Secrets
+.env
+backend/.env
+
+# Python Cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+
+# Storage & Temporary Files
+data/
+uploads/
+uploads/*.pdf
+
+# Node & Frontend Build
+node_modules/
+dist/
+.DS_Store

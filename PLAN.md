@@ -1,10 +1,10 @@
-# 5-Hour Sprint Plan: Secure PDF RAG System (DocQuery)
+# 5-Phase Implementation Plan: Secure PDF RAG System (DocQuery)
 
 ---
 
 ## 1. Executive Summary & Strategy
 
-This document outlines the strict **5-Hour Sprint Schedule** to build, evaluate, and deploy the Secure PDF RAG Question-Answering System.
+This document outlines the strict **5-Phase Implementation Plan** to build, evaluate, and deploy the Secure PDF RAG Question-Answering System.
 
 ### Key Objectives
 1. **Strict Context Grounding:** Answers are generated **exclusively** from uploaded PDF documents. Zero outside LLM speculation.
@@ -58,9 +58,9 @@ The frontend must adhere strictly to the following design system constraints:
 
 ---
 
-## 4. Hour-by-Hour Sprint Breakdown (5 Hours Total)
+## 4. Phase-by-Phase Implementation Breakdown
 
-### Hour 1: PDF Ingestion & Embedding Pipeline
+### Phase 1: PDF Ingestion & Embedding Pipeline
 * **Goal:** Extract text from PDFs page-by-page, chunk with metadata, and generate dense vectors.
 * **Tasks:**
   1. Initialize Python virtual environment with `fastapi`, `uvicorn`, `pypdf`, `google-genai`, `pydantic`.
@@ -68,27 +68,27 @@ The frontend must adhere strictly to the following design system constraints:
      * Read uploaded PDF bytes using `pypdf`.
      * Preserve 1-indexed page numbers and document filename.
      * Implement sliding-window chunker (~450 chars, 50 chars overlap) with chunk ID tags.
-     * Connect to Google Gemini API (`text-embedding-004`) for batch vector embeddings.
+     * Connect to Google Gemini API (`gemini-embedding-001`) for batch vector embeddings.
   3. Validate embedding generation on sample text in under 1 second.
-* **Milestone:** Ingestion and vector generation fully verified via CLI test script.
+* **Milestone:** Ingestion and vector generation fully verified via CLI test script (`test_phase1.py`).
 
 ---
 
-### Hour 2: Guardrails, Refusal Engine & Evaluation Suite
+### Phase 2: Guardrails, Refusal Engine & Evaluation Suite
 * **Goal:** Implement evidence-grounded generation, anti-hallucination refusal, and the 10-question benchmark.
 * **Tasks:**
   1. Build retrieval logic computing cosine similarity across stored chunks.
   2. Implement **Guardrail Rules**:
      * If top similarity score is below threshold (`< 0.40`), short-circuit with refusal: *"I don't have enough information in the provided documents to answer this question."*
      * Enclose retrieved context in `<document_context>` XML tags to isolate potential prompt injections.
-  3. Wire `gemini-1.5-flash` with strict system prompt forcing citations.
+  3. Wire `gemini-3.1-flash-lite` with strict system prompt forcing citations.
   4. Create `backend/benchmark.json` containing the 10 CyanoFabric test questions.
   5. Implement evaluation runner that computes factual match and confirms rejection of question #10.
-* **Milestone:** CLI evaluation runs all 10 questions and outputs an automated scorecard (target: 9/10 factual, 1/1 rejected).
+* **Milestone:** CLI evaluation runs all 10 questions and outputs an automated scorecard (100% accuracy).
 
 ---
 
-### Hour 3: FastAPI Web Service & Typed Contracts
+### Phase 3: FastAPI Web Service & Typed Contracts
 * **Goal:** Expose high-performance REST API endpoints with Pydantic schemas and CORS support.
 * **Tasks:**
   1. Define Pydantic models in `backend/schemas.py`:
@@ -100,11 +100,11 @@ The frontend must adhere strictly to the following design system constraints:
      * `POST /api/evaluate`: Runs the 10-question benchmark and returns evaluation metrics.
      * `GET /api/health`: Confirms service health and loaded document count.
   3. Enable FastAPI CORS middleware for frontend communication.
-* **Milestone:** Interactive Swagger UI (`/docs`) operational with all endpoints tested via curl.
+* **Milestone:** Interactive Swagger UI (`/docs`) operational with all endpoints tested.
 
 ---
 
-### Hour 4: React + TypeScript Dashboard (Minimalist Design System)
+### Phase 4: React + TypeScript Dashboard (Minimalist Design System)
 * **Goal:** Build the frontend matching the strict design rules (no emojis, left-aligned, 1 accent color, 1 corner radius, flat 1px borders).
 * **Tasks:**
   1. Scaffold `frontend/` using Vite (`npm create vite@latest frontend -- --template react-ts`).
@@ -115,11 +115,11 @@ The frontend must adhere strictly to the following design system constraints:
      * `BenchmarkPanel.tsx`: 1-click evaluation trigger displaying test summary table and accuracy percentage.
      * Empty states for each view when no document or query is active.
   4. Apply uniform `border-radius: 6px`, 1px borders, Inter font, and `#2563eb` accent.
-* **Milestone:** Fully functional, typed React UI running locally on port 5173 connected to the FastAPI backend.
+* **Milestone:** Fully functional, typed React UI running locally connected to the FastAPI backend.
 
 ---
 
-### Hour 5: Free Cloud Deployment, Testing & Demo Script
+### Phase 5: Free Cloud Deployment, Testing & Demo Script
 * **Goal:** Deploy the full-stack system for free, run end-to-end regression tests, and prepare the demo guide.
 * **Tasks:**
   1. Configure `netlify.toml` for frontend deployment with API proxy rewrites.
@@ -143,6 +143,8 @@ DocQuery/
 │   ├── rag_engine.py            # PDF loader, chunker, embeddings, & guardrails
 │   ├── schemas.py               # Pydantic data models
 │   ├── benchmark.json           # 10 ground-truth CyanoFabric test questions
+│   ├── evaluate.py              # Automated test harness runner
+│   ├── test_phase1.py           # Verification script for PDF loader & chunker
 │   ├── requirements.txt         # fastapi, uvicorn, pypdf, google-genai, pydantic
 │   └── .env.example             # GEMINI_API_KEY template
 ├── frontend/                    # React 18 + TypeScript + Vite
@@ -160,7 +162,7 @@ DocQuery/
 ├── documents/
 │   └── CyanoFabric_Job_Description.pdf # Benchmark evaluation document
 ├── netlify.toml                 # Netlify build & rewrite configuration
-├── PLAN.md                      # This 5-hour sprint plan
+├── PLAN.md                      # This 5-phase plan
 └── README.md                    # Setup, architecture & interview demo script
 ```
 
