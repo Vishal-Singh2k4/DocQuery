@@ -5,7 +5,7 @@ class PDF(FPDF):
     def header(self):
         self.set_font('Helvetica', 'B', 10)
         self.set_text_color(100, 100, 100)
-        self.cell(0, 10, 'CyanoFabric - Recruitment & Roles', border=False, ln=True, align='R')
+        self.cell(0, 10, 'Engineering Organization - Roles & Specifications', border=False, ln=True, align='R')
         self.ln(2)
 
     def footer(self):
@@ -68,9 +68,9 @@ def generate_pdf():
         "Build LLM features: retrieval over documents (RAG), structured extraction and evaluation.",
         "Build AI agents that plan, call tools through MCP and ask a person for approval.",
         "Red-team AI features and agents for prompt injection and data leakage. Build guardrails.",
-        "Test web applications and APIs against the OWASP Top 10 and fix what you find.",
+        "Test web applications and APIs against the OWASP Top 10 security framework and fix what you find.",
         "Build security engineering features: asset discovery, vulnerability data pipelines and risk scoring.",
-        "Write backend services in Python or TypeScript on PostgreSQL, with screens in React.",
+        "Write backend services in Python or TypeScript on PostgreSQL database, with screens in React.",
         "Package what you build in containers for the cloud and for on-premises installation.",
         "Write tests and evaluations for everything you ship. Give and receive code review."
     ]
@@ -96,7 +96,7 @@ def generate_pdf():
         "Python or TypeScript, with at least one project we can read on GitHub or run.",
         "How LLMs work in practice: tokens, context windows, embeddings and tool calling.",
         "Web and API fundamentals: HTTP, REST, JSON, authentication and access control.",
-        "Security fundamentals: the OWASP Top 10 and basic networking.",
+        "Security fundamentals: the OWASP Top 10 security framework and basic networking.",
         "SQL, Git and the Linux command line."
     ]
     for mb in must_bring:
@@ -129,7 +129,7 @@ def generate_pdf():
         "a vulnerable web application we provide."
     ))
 
-    output_path = os.path.join('documents', 'CyanoFabric_Job_Description.pdf')
+    output_path = os.path.join('documents', 'sample_document.pdf')
     pdf.output(output_path)
     print(f"Created {output_path} successfully!")
 

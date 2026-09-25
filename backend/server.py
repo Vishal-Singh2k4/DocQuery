@@ -9,6 +9,7 @@ from backend.schemas import (
     QueryRequest, 
     QueryResponse, 
     DocumentUploadResponse, 
+    DeleteDocumentResponse,
     HealthResponse, 
     EvalSummary,
     SourceCitation
@@ -31,26 +32,41 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Global in-memory RAG engine instance
 rag_engine = RAGEngine()
-
-# Automatically ingest demo PDF if present on startup
-DEMO_PDF = os.path.join("documents", "CyanoFabric_Job_Description.pdf")
-if os.path.exists(DEMO_PDF):
-    try:
-        with open(DEMO_PDF, "rb") as f:
-            rag_engine.ingest_pdf(f.read(), os.path.basename(DEMO_PDF))
-        print(f"[DocQuery Server] Preloaded demo document: {DEMO_PDF}")
-    except Exception as e:
-        print(f"[DocQuery Server] Warning: Demo PDF preload failed: {e}")
 
 @app.get("/api/health", response_model=HealthResponse)
 def health_check():
-    """Confirms service health and returns loaded document metrics."""
+    active_doc = list(rag_engine.documents.keys())[0] if rag_engine.documents else None
+    total_pages = rag_engine.documents.get(active_doc, 0) if active_doc else 0
     return HealthResponse(
         status="healthy",
         documents_loaded=len(rag_engine.documents),
-        total_chunks=len(rag_engine.chunks)
+        total_chunks=len(rag_engine.chunks),
+        active_document=active_doc,
+        total_pages=total_pages
+    )
+
+@app.delete("/api/document", response_model=DeleteDocumentResponse)
+def delete_document(filename: Optional[str] = None):
+    if filename:
+        rag_engine.remove_document(filename)
+        msg = f"Document '{filename}' removed."
+    else:
+        rag_engine.clear_documents()
+        msg = "All uploaded documents removed."
+    return DeleteDocumentResponse(
+        status="success",
+        message=msg,
+        documents_remaining=len(rag_engine.documents)
+    )
+
+@app.delete("/api/document/{filename}", response_model=DeleteDocumentResponse)
+def delete_specific_document(filename: str):
+    rag_engine.remove_document(filename)
+    return DeleteDocumentResponse(
+        status="success",
+        message=f"Document '{filename}' removed.",
+        documents_remaining=len(rag_engine.documents)
     )
 
 @app.post("/api/upload", response_model=DocumentUploadResponse)
@@ -101,10 +117,6 @@ def query_documents(request: QueryRequest):
 
 @app.post("/api/evaluate", response_model=EvalSummary)
 def evaluate_system():
-    """
-    Runs the automated 10-question evaluation benchmark against the CyanoFabric document.
-    Returns test results, page citation matches, and overall accuracy.
-    """
     try:
         summary = run_evaluation()
         return summary

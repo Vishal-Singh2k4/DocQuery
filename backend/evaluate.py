@@ -5,10 +5,17 @@ from typing import Dict, Any, List
 from backend.rag_engine import RAGEngine
 from backend.schemas import EvalSummary, EvalResultItem, SourceCitation
 
-def run_evaluation(pdf_path: str = "documents/CyanoFabric_Job_Description.pdf", benchmark_path: str = "backend/benchmark.json") -> EvalSummary:
+def run_evaluation(pdf_path: str = None, benchmark_path: str = "backend/benchmark.json") -> EvalSummary:
     print("\n=======================================================")
-    print("   CYANOFABRIC PDF RAG EVALUATION BENCHMARK SUITE      ")
+    print("        RAG PIPELINE EVALUATION BENCHMARK SUITE        ")
     print("=======================================================\n")
+
+    if not pdf_path:
+        docs_dir = "documents"
+        pdf_candidates = [os.path.join(docs_dir, f) for f in os.listdir(docs_dir) if f.lower().endswith(".pdf")] if os.path.exists(docs_dir) else []
+        if not pdf_candidates:
+            raise FileNotFoundError("No evaluation document found in documents/ directory.")
+        pdf_path = pdf_candidates[0]
 
     if not os.path.exists(pdf_path):
         raise FileNotFoundError(f"PDF not found at {pdf_path}")

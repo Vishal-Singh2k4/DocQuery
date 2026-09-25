@@ -23,10 +23,17 @@ class DocumentUploadResponse(BaseModel):
     total_chunks: int
     status: str
 
+class DeleteDocumentResponse(BaseModel):
+    status: str
+    message: str
+    documents_remaining: int
+
 class HealthResponse(BaseModel):
     status: str
     documents_loaded: int
     total_chunks: int
+    active_document: Optional[str] = None
+    total_pages: Optional[int] = None
 
 class EvalResultItem(BaseModel):
     question_id: int

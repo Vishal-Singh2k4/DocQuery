@@ -2,18 +2,18 @@ import os
 import sys
 from backend.rag_engine import RAGEngine
 
-def test_hour1_pipeline():
-    print("--- Running Hour 1 Verification Tests ---")
+def test_phase1_pipeline():
+    print("--- Running Phase 1 Verification Tests ---")
     engine = RAGEngine()
     
-    pdf_path = os.path.join("documents", "CyanoFabric_Job_Description.pdf")
+    pdf_path = os.path.join("documents", "sample_document.pdf")
     assert os.path.exists(pdf_path), f"Test PDF not found at {pdf_path}"
     
     with open(pdf_path, "rb") as f:
         file_bytes = f.read()
 
     # 1. Test PDF Extraction
-    pages = engine.extract_text_from_pdf(file_bytes, "CyanoFabric_Job_Description.pdf")
+    pages = engine.extract_text_from_pdf(file_bytes, "sample_document.pdf")
     print(f"[PASS] Extracted {len(pages)} pages from PDF.")
     assert len(pages) == 3, f"Expected 3 pages, found {len(pages)}"
     
@@ -23,15 +23,15 @@ def test_hour1_pipeline():
         print(f"  - Page {page_num}: {len(text)} characters extracted.")
 
     # 2. Test Chunking
-    chunks = engine.chunk_document(pages, "CyanoFabric_Job_Description.pdf", chunk_size=450, chunk_overlap=50)
+    chunks = engine.chunk_document(pages, "sample_document.pdf", chunk_size=450, chunk_overlap=50)
     print(f"[PASS] Generated {len(chunks)} chunks from {len(pages)} pages.")
     assert len(chunks) >= 3, "Expected at least 3 chunks"
 
     # Verify metadata on all chunks
     for chunk in chunks:
-        assert chunk.doc_name == "CyanoFabric_Job_Description.pdf"
+        assert chunk.doc_name == "sample_document.pdf"
         assert chunk.page_number in [1, 2, 3]
-        assert chunk.chunk_id.startswith("CyanoFabric_Job_Description.pdf_p")
+        assert chunk.chunk_id.startswith("sample_document.pdf_p")
         assert len(chunk.text) > 0
 
     print("  - Sample chunk metadata verified:")
@@ -52,7 +52,7 @@ def test_hour1_pipeline():
     assert round(cos_sim(v1, v3), 4) == 0.0, "Cosine similarity for orthogonal vectors failed"
     print("[PASS] Vector math & similarity functions verified.")
 
-    print("\n--- ALL HOUR 1 TESTS PASSED SUCCESSFULLY! ---")
+    print("\n--- ALL PHASE 1 TESTS PASSED SUCCESSFULLY! ---")
 
 if __name__ == "__main__":
-    test_hour1_pipeline()
+    test_phase1_pipeline()

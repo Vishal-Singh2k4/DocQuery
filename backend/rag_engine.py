@@ -38,6 +38,16 @@ class RAGEngine:
         self.api_key = api_key
         self.client = genai.Client(api_key=api_key)
 
+    def clear_documents(self):
+        """Clears all indexed documents and chunks from memory."""
+        self.chunks.clear()
+        self.documents.clear()
+
+    def remove_document(self, filename: str):
+        """Removes a specific document and its associated chunks."""
+        self.chunks = [c for c in self.chunks if c.doc_name != filename]
+        self.documents.pop(filename, None)
+
     def extract_text_from_pdf(self, file_bytes: bytes, filename: str) -> List[Tuple[int, str]]:
         """
         Extracts text from PDF bytes page by page.
@@ -95,7 +105,7 @@ class RAGEngine:
 
     def generate_embeddings(self, texts: List[str]) -> List[List[float]]:
         """
-        Generates dense vector embeddings using Google Gemini text-embedding-004.
+        Generates dense vector embeddings using Google Gemini gemini-embedding-001.
         """
         if not self.client:
             raise ValueError("Gemini API key is not configured. Please set GEMINI_API_KEY in your environment.")
@@ -170,7 +180,6 @@ class RAGEngine:
         """
         top_results = self.search(question, top_k=top_k)
         
-        # Guardrail check 1: Empty results or low similarity score
         if not top_results or top_results[0][1] < self.confidence_threshold:
             return {
                 "answer": "I don't have enough information in the provided documents to answer this question.",
@@ -179,7 +188,6 @@ class RAGEngine:
                 "confidence": "Insufficient Evidence"
             }
 
-        # Build context isolated in XML tags (neutralizing potential prompt injections)
         context_parts = []
         sources = []
         for chunk, score in top_results:
@@ -195,15 +203,13 @@ class RAGEngine:
 
         context_str = "\n\n".join(context_parts)
 
-        # Strict RAG system prompt
         system_instruction = (
-            "You are a strict, grounded Document Question-Answering engine.\n"
-            "Rules you must strictly follow:\n"
-            "1. Answer the user question using ONLY the facts explicitly provided inside the <document_context> tags below.\n"
-            "2. Do NOT speculate, infer outside facts, or use general pre-trained knowledge.\n"
-            "3. If the document context does NOT explicitly answer the question, respond with exactly:\n"
+            "You are a factual document question-answering assistant.\n"
+            "Use only the facts provided inside the <document_context> tags.\n"
+            "Do not infer, speculate, or draw from outside knowledge.\n"
+            "If the context does not explicitly provide the answer, respond with:\n"
             "\"I don't have enough information in the provided documents to answer this question.\"\n"
-            "4. Keep your answer concise, direct, and factual. Always mention the source page number(s) referenced."
+            "Cite the relevant page numbers whenever information is referenced."
         )
 
         user_prompt = (
@@ -217,14 +223,14 @@ class RAGEngine:
         last_error = None
 
         for model_name in candidate_models:
-            for attempt in range(2):
+            for _ in range(2):
                 try:
                     response = self.client.models.generate_content(
                         model=model_name,
                         contents=user_prompt,
                         config=types.GenerateContentConfig(
                             system_instruction=system_instruction,
-                            temperature=0.0, # Deterministic, zero hallucination
+                            temperature=0.0,
                         )
                     )
                     raw_answer = response.text.strip() if response.text else ""
@@ -239,7 +245,6 @@ class RAGEngine:
         if not raw_answer:
             raw_answer = f"Error generating answer: {last_error}"
             
-        # Guardrail check 2: Check if model indicated insufficient information
         refusal_phrase = "don't have enough information"
         is_refusal = refusal_phrase.lower() in raw_answer.lower()
 

@@ -10,7 +10,7 @@ This document outlines the strict **5-Phase Implementation Plan** to build, eval
 1. **Strict Context Grounding:** Answers are generated **exclusively** from uploaded PDF documents. Zero outside LLM speculation.
 2. **Granular Citations:** Exact document name and page number attribution for every generated answer.
 3. **Anti-Hallucination Guardrail:** Explicit refusal when information is absent from the documents.
-4. **10-Question CyanoFabric Benchmark:** Automated evaluation testing factual accuracy and refusal verification.
+4. **10-Question Evaluation Benchmark:** Automated evaluation testing factual accuracy and refusal verification.
 5. **Modern Minimalist React + TypeScript UI:** Built in strict compliance with clean, anti-bloat design principles (no emojis, no purple gradients, no drop shadows, 1 accent color, 1 corner radius, left-aligned typography).
 6. **Free-Tier Deployment:** Decoupled architecture on **Netlify** (Frontend) and **Render / Hugging Face Spaces** (Backend).
 
@@ -82,7 +82,7 @@ The frontend must adhere strictly to the following design system constraints:
      * If top similarity score is below threshold (`< 0.40`), short-circuit with refusal: *"I don't have enough information in the provided documents to answer this question."*
      * Enclose retrieved context in `<document_context>` XML tags to isolate potential prompt injections.
   3. Wire `gemini-3.1-flash-lite` with strict system prompt forcing citations.
-  4. Create `backend/benchmark.json` containing the 10 CyanoFabric test questions.
+  4. Create `backend/benchmark.json` containing the 10 evaluation test questions.
   5. Implement evaluation runner that computes factual match and confirms rejection of question #10.
 * **Milestone:** CLI evaluation runs all 10 questions and outputs an automated scorecard (100% accuracy).
 
@@ -124,7 +124,7 @@ The frontend must adhere strictly to the following design system constraints:
 * **Tasks:**
   1. Configure `netlify.toml` for frontend deployment with API proxy rewrites.
   2. Create lightweight `Dockerfile` or Render build script for the FastAPI backend.
-  3. Ingest the CyanoFabric Job Description PDF and record live query responses.
+  3. Ingest the sample document PDF and record live query responses.
   4. Write `README.md` containing:
      * Architecture breakdown & design decisions
      * Guardrail & prompt injection mitigation strategy
@@ -142,7 +142,7 @@ DocQuery/
 │   ├── server.py                # FastAPI app & REST routes
 │   ├── rag_engine.py            # PDF loader, chunker, embeddings, & guardrails
 │   ├── schemas.py               # Pydantic data models
-│   ├── benchmark.json           # 10 ground-truth CyanoFabric test questions
+│   ├── benchmark.json           # 10 ground-truth test questions
 │   ├── evaluate.py              # Automated test harness runner
 │   ├── test_phase1.py           # Verification script for PDF loader & chunker
 │   ├── requirements.txt         # fastapi, uvicorn, pypdf, google-genai, pydantic
@@ -160,7 +160,7 @@ DocQuery/
 │   ├── tsconfig.json
 │   └── vite.config.ts
 ├── documents/
-│   └── CyanoFabric_Job_Description.pdf # Benchmark evaluation document
+│   └── sample_document.pdf      # Benchmark evaluation document
 ├── netlify.toml                 # Netlify build & rewrite configuration
 ├── PLAN.md                      # This 5-phase plan
 └── README.md                    # Setup, architecture & interview demo script
@@ -181,4 +181,4 @@ DocQuery/
 | 7  | What frontend technology is mentioned?             | React                                                   | Page 1      |
 | 8  | What skills are listed as good-to-have?            | RAG/agent frameworks, Docker, cloud, Ollama or vLLM     | Page 1      |
 | 9  | What are the core functional areas of the role?    | AI, agentic AI and cybersecurity                        | Page 1      |
-| 10 | What is CyanoFabric's annual revenue?              | Refusal: Information not available in the document      | N/A         |
+| 10 | What is the organization's annual revenue?         | Refusal: Information not available in the document      | N/A         |

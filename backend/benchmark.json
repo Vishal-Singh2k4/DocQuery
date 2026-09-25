@@ -64,7 +64,7 @@
   },
   {
     "id": 10,
-    "question": "What is CyanoFabric's annual revenue?",
+    "question": "What is the organization's annual revenue?",
     "expected_answer": "I don't have enough information in the provided documents to answer this question.",
     "expected_page": null,
     "is_unsupported": true
