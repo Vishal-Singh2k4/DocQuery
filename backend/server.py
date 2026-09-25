@@ -46,6 +46,15 @@ def health_check():
         total_pages=total_pages
     )
 
+@app.get("/")
+def root():
+    return {
+        "name": "DocQuery API",
+        "status": "online",
+        "health": "/api/health",
+        "docs": "/docs"
+    }
+
 @app.delete("/api/document", response_model=DeleteDocumentResponse)
 def delete_document(filename: Optional[str] = None):
     if filename:
