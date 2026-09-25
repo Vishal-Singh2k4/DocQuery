@@ -2,6 +2,16 @@
 
 > Production-grade, evidence-grounded PDF Question-Answering service featuring granular page citations, anti-hallucination guardrails, and an automated 10-question evaluation benchmark.
 
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-docquery2k4.netlify.app-2563eb?style=for-the-badge&logo=netlify&logoColor=white)](https://docquery2k4.netlify.app/)
+[![Backend API](https://img.shields.io/badge/API-Render-46e3b7?style=for-the-badge&logo=render&logoColor=white)](https://docquery-c7o8.onrender.com/docs)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.110+-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
+[![React](https://img.shields.io/badge/React-18-61dafb?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178c6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+
+* **Live Frontend:** [https://docquery2k4.netlify.app/](https://docquery2k4.netlify.app/)
+* **Live API & Swagger Docs:** [https://docquery-c7o8.onrender.com/docs](https://docquery-c7o8.onrender.com/docs)
+* **Technical Report (PDF):** [`DocQuery_Implementation_Report.pdf`](DocQuery_Implementation_Report.pdf) | [Markdown Version](PHASE_IMPLEMENTATION_REPORT.md)
+
 ---
 
 ## 1. Project Overview & Architecture
